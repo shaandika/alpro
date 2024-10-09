@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unggah File CSV</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000; /* Warna hitam */
+            color: #FFF; /* Warna putih untuk teks */
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            color: #FF69B4; /* Warna hot pink */
+        }
+        .upload-box {
+            border: 2px solid #FF69B4; /* Warna hot pink */
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #1C1C1C; /* Warna abu-abu gelap */
+            text-align: center;
+            width: 300px;
+            margin-bottom: 20px; /* Jarak antara dua kotak */
+        }
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px; /* Maksimal lebar tabel */
+            overflow-x: auto; /* Tambahkan scroll horizontal */
+            display: block; /* Membuat tabel menjadi block agar scroll berfungsi */
+        }
+        th, td {
+            border: 1px solid #FF69B4; /* Warna hot pink */
+            padding: 8px;
+            text-align: left;
+            white-space: nowrap; /* Mencegah teks terpotong dan memperlihatkan semua teks */
+        }
+        th {
+            background-color: #FF1493; /* Warna hot pink yang lebih gelap */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Unggah File CSV</h1>
+    <div class="upload-box">
+        <label for="fileInput">Upload File CSV:</label>
+        <input type="file" id="fileInput" accept=".csv" onchange="uploadFile()">
+    </div>
+
+    <h2>Data yang Diunggah</h2>
+    <div style="overflow-x:auto;">
+        <table id="dataTable"></table>
+    </div>
+
+    <script>
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const table = document.getElementById('dataTable');
+
+            if (fileInput.files.length === 0) {
+                alert('Silakan unggah file CSV terlebih dahulu.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const rows = text.split('\n');
+
+                // Clear previous table data
+                table.innerHTML = '';
+
+                // Create table headers
+                const headerRow = document.createElement('tr');
+                const headers = rows[0].split(',');
+                headers.forEach(header => {
+                    const th = document.createElement('th');
+                    th.textContent = header;
+                    headerRow.appendChild(th);
+                });
+                table.appendChild(headerRow);
+
+                // Create table rows
+                rows.slice(1).forEach(row => {
+                    if (row.trim()) { // Check if row is not empty
+                        const tr = document.createElement('tr');
+                        const cells = row.split(',');
+                        cells.forEach(cell => {
+                            const td = document.createElement('td');
+                            td.textContent = cell;
+                            tr.appendChild(td);
+                        });
+                        table.appendChild(tr);
+                    }
+                });
+            };
+
+            reader.readAsText(file);
+        }
+    </script>
+
+</body>
+</html>
